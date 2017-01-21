@@ -47344,6 +47344,9 @@
 	    };
 	    TreeInternalComponent.prototype.setUpDraggableEventHandler = function () {
 	        var _this = this;
+	        if (this.settings != null && !this.settings['dragAndDrop']) {
+	            return;
+	        }
 	        this.nodeDraggableService.draggableNodeEvents$
 	            .filter(function (e) { return e.action === draggable_types_1.NodeDraggableEventAction.Remove; })
 	            .filter(function (e) { return e.captured.element === _this.element; })
@@ -47552,7 +47555,7 @@
 	        core_1.Component({
 	            selector: 'tree-internal',
 	            styles: tree_styles_1.styles,
-	            template: "\n  <ul class=\"tree\" *ngIf=\"tree\">\n    <li>\n      <div (contextmenu)=\"showMenu($event)\" [nodeDraggable]=\"element\" [tree]=\"tree\">\n        <div class=\"folding\" (click)=\"switchFoldingType($event, tree)\" [ngClass]=\"getFoldingTypeCssClass(tree)\"></div>\n        <div href=\"#\" class=\"node-value\" *ngIf=\"!isEditInProgress()\" [class.node-selected]=\"isSelected\" (click)=\"onNodeSelected($event)\">{{tree.value}}</div>\n\n        <input type=\"text\" class=\"node-value\" *ngIf=\"isEditInProgress()\"\n               [nodeEditable]=\"tree.value\"\n               (valueChanged)=\"applyNewValue($event, tree)\"/>\n      </div>\n\n      <node-menu *ngIf=\"isMenuVisible\" (menuItemSelected)=\"onMenuItemSelected($event)\"></node-menu>\n\n      <template [ngIf]=\"isNodeExpanded()\">\n        <tree-internal *ngFor=\"let child of tree.children; let position = index\"\n              [parentTree]=\"tree\"\n              [indexInParent]=\"position\"\n              [tree]=\"child\"\n              [settings]=\"settings\"\n              (nodeRemoved)=\"onChildRemoved($event)\"></tree-internal>\n      </template>\n    </li>\n  </ul>\n  "
+	            template: "\n  <ul class=\"tree\" *ngIf=\"tree\">\n    <li>\n      <div (contextmenu)=\"showMenu($event)\"\n       [nodeDraggable]=\"element\"\n       [settings]=\"settings\"\n       [tree]=\"tree\">\n        <div class=\"folding\" (click)=\"switchFoldingType($event, tree)\" [ngClass]=\"getFoldingTypeCssClass(tree)\"></div>\n        <div href=\"#\" class=\"node-value\" *ngIf=\"!isEditInProgress()\" [class.node-selected]=\"isSelected\" (click)=\"onNodeSelected($event)\">{{tree.value}}</div>\n\n        <input type=\"text\" class=\"node-value\" *ngIf=\"isEditInProgress()\"\n               [nodeEditable]=\"tree.value\"\n               (valueChanged)=\"applyNewValue($event, tree)\"/>\n      </div>\n\n      <node-menu *ngIf=\"isMenuVisible\" (menuItemSelected)=\"onMenuItemSelected($event)\"></node-menu>\n\n      <template [ngIf]=\"isNodeExpanded()\">\n        <tree-internal *ngFor=\"let child of tree.children; let position = index\"\n              [parentTree]=\"tree\"\n              [indexInParent]=\"position\"\n              [tree]=\"child\"\n              [settings]=\"settings\"\n              (nodeRemoved)=\"onChildRemoved($event)\"></tree-internal>\n      </template>\n    </li>\n  </ul>\n  "
 	        }),
 	        __param(0, core_1.Inject(node_menu_service_1.NodeMenuService)),
 	        __param(1, core_1.Inject(node_draggable_service_1.NodeDraggableService)),
@@ -93869,7 +93872,8 @@
 	            ]
 	        };
 	        this.settings = {
-	            contextMenu: false
+	            contextMenu: false,
+	            dragAndDrop: false
 	        };
 	    }
 	    AppComponent.prototype.onNodeRemoved = function (e) {
@@ -94078,13 +94082,15 @@
 	        this.renderer = renderer;
 	        this.disposersForDragListeners = [];
 	        this.nodeNativeElement = element.nativeElement;
-	        renderer.setElementAttribute(this.nodeNativeElement, 'draggable', 'true');
-	        this.disposersForDragListeners.push(renderer.listen(this.nodeNativeElement, 'dragstart', this.handleDragStart.bind(this)));
-	        this.disposersForDragListeners.push(renderer.listen(this.nodeNativeElement, 'dragenter', this.handleDragEnter.bind(this)));
-	        this.disposersForDragListeners.push(renderer.listen(this.nodeNativeElement, 'dragover', this.handleDragOver.bind(this)));
-	        this.disposersForDragListeners.push(renderer.listen(this.nodeNativeElement, 'dragleave', this.handleDragLeave.bind(this)));
-	        this.disposersForDragListeners.push(renderer.listen(this.nodeNativeElement, 'drop', this.handleDrop.bind(this)));
-	        this.disposersForDragListeners.push(renderer.listen(this.nodeNativeElement, 'dragend', this.handleDragEnd.bind(this)));
+	        if (this.settings != null && this.settings.dragAndDrop) {
+	            renderer.setElementAttribute(this.nodeNativeElement, 'draggable', 'true');
+	            this.disposersForDragListeners.push(renderer.listen(this.nodeNativeElement, 'dragstart', this.handleDragStart.bind(this)));
+	            this.disposersForDragListeners.push(renderer.listen(this.nodeNativeElement, 'dragenter', this.handleDragEnter.bind(this)));
+	            this.disposersForDragListeners.push(renderer.listen(this.nodeNativeElement, 'dragover', this.handleDragOver.bind(this)));
+	            this.disposersForDragListeners.push(renderer.listen(this.nodeNativeElement, 'dragleave', this.handleDragLeave.bind(this)));
+	            this.disposersForDragListeners.push(renderer.listen(this.nodeNativeElement, 'drop', this.handleDrop.bind(this)));
+	            this.disposersForDragListeners.push(renderer.listen(this.nodeNativeElement, 'dragend', this.handleDragEnd.bind(this)));
+	        }
 	    }
 	    NodeDraggableDirective.prototype.ngOnDestroy = function () {
 	        this.disposersForDragListeners.forEach(function (dispose) { return dispose(); });
@@ -94159,6 +94165,10 @@
 	        core_1.Input(), 
 	        __metadata('design:type', Object)
 	    ], NodeDraggableDirective.prototype, "tree", void 0);
+	    __decorate([
+	        core_1.Input(), 
+	        __metadata('design:type', Object)
+	    ], NodeDraggableDirective.prototype, "settings", void 0);
 	    NodeDraggableDirective = __decorate([
 	        core_1.Directive({
 	            selector: '[nodeDraggable]'
