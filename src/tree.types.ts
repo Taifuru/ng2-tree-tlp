@@ -20,7 +20,8 @@ export interface TreeModel {
 }
 
 export interface TreeSettings {
-  contextMenu: boolean;
+  contextMenu?: boolean;
+  dragAndDrop?: boolean;
 }
 
 export enum TreeStatus {

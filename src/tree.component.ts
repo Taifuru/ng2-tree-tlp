@@ -17,7 +17,10 @@ import { styles } from './tree.styles';
   template: `
   <ul class="tree" *ngIf="tree">
     <li>
-      <div (contextmenu)="showMenu($event)" [nodeDraggable]="element" [tree]="tree">
+      <div (contextmenu)="showMenu($event)"
+       [nodeDraggable]="element"
+       [settings]="settings"
+       [tree]="tree">
         <div class="folding" (click)="switchFoldingType($event, tree)" [ngClass]="getFoldingTypeCssClass(tree)"></div>
         <div href="#" class="node-value" *ngIf="!isEditInProgress()" [class.node-selected]="isSelected" (click)="onNodeSelected($event)">{{tree.value}}</div>
 
@@ -97,6 +100,10 @@ export class TreeInternalComponent implements OnInit {
   // DRAG-N-DROP -------------------------------------------------------------------------------------------------------
 
   private setUpDraggableEventHandler(): void {
+    if(this.settings != null && !this.settings['dragAndDrop']) {
+      return;
+    }
+
     this.nodeDraggableService.draggableNodeEvents$
       .filter((e: NodeDraggableEvent) => e.action === NodeDraggableEventAction.Remove)
       .filter((e: NodeDraggableEvent) => e.captured.element === this.element)

@@ -1,6 +1,6 @@
 {
   "name": "ng2-tree-tlp",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "angular2 component for visualizing data that can be naturally represented as a tree",
   "main": "index.js",
   "license": "MIT",
@@ -8,13 +8,13 @@
     "name": "Talip Tayfur",
     "email": "taliptayfur@gmail.com"
   },
-  "homepage": "https://github.com/Taifuru/ng2-tree",
+  "homepage": "https://github.com/Taifuru/ng2-tree-tlp",
   "repository": {
     "type": "git",
-    "url": "git@github.com:Taifuru/ng2-tree.git"
+    "url": "git@github.com:Taifuru/ng2-tree-tlp.git"
   },
   "bugs": {
-    "url": "https://github.com/Taifuru/ng2-tree/issues"
+    "url": "https://github.com/Taifuru/ng2-tree-tlp/issues"
   },
   "keywords": [
     "tree",

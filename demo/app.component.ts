@@ -138,7 +138,8 @@ export class AppComponent {
   };
 
   public settings: TreeSettings = {
-    contextMenu: false
+    contextMenu: false,
+    dragAndDrop: false
   };
 
   public onNodeRemoved(e: NodeEvent): void {
